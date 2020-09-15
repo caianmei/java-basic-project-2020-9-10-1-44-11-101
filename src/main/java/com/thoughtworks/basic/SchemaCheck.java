@@ -56,7 +56,7 @@ public class SchemaCheck {
 				//下一字符是schema时，当前schema附默认值
 				if (i == inputParams.size() - 1 || shcemas.contains(inputParams.get(i + 1))) {
 					//获取默认schema值
-					resultMap = getSchemaValue(inputParams.get(i).replace("-", ""),resultMap);
+					resultMap = getSchemaValue(inputParams.get(i),resultMap);
 					if (!CodeValueContant.SUCCESS.equals(resultMap.get(CommandValueContant.CODE))) {
 						return resultMap;
 					}
@@ -119,7 +119,12 @@ public class SchemaCheck {
 	}
 	
 	private static Map<String, Object> getSchemaValue(String schemaKey, Map<String, Object> resultMap) {
-		switch (schemaKey) {
+		if (resultMap.containsKey(schemaKey)) {
+			resultMap.put(CommandValueContant.CODE, CodeValueContant.FAIL);
+			resultMap.put(CommandValueContant.MESSAGE, "输入不合法");
+			return resultMap;
+		}
+		switch (schemaKey.replace("-", "")) {
 		case "l":
 			resultMap.put("-l", schema.getlValue());
 			break;
